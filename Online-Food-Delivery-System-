@@ -1,0 +1,152 @@
+class FoodItem {
+
+    private String itemName;
+    private double price;
+
+    public FoodItem(String itemName, double price) {
+        this.itemName = itemName;
+        this.price = price;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void showItem() {
+        System.out.printf("%-15s Rs. %.2f\n", itemName, price);
+    }
+}
+
+class Restaurant {
+
+    private String restaurantName;
+    private FoodItem[] menu;
+
+    public Restaurant(String restaurantName, FoodItem[] menu) {
+        this.restaurantName = restaurantName;
+        this.menu = menu;
+    }
+
+    public void showMenu() {
+
+        System.out.println("Restaurant : " + restaurantName);
+        System.out.println("----------- MENU -----------");
+
+        for (int i = 0; i < menu.length; i++) {
+
+            System.out.print((i + 1) + ". ");
+            menu[i].showItem();
+        }
+    }
+}
+
+class Order {
+
+    private FoodItem[] orderedItems = new FoodItem[10];
+    private int[] quantity = new int[10];
+
+    private int count = 0;
+
+    private double subtotal;
+    private double deliveryCharge;
+    private double gst;
+    private double finalAmount;
+
+    public void addItem(FoodItem item, int qty) {
+
+        orderedItems[count] = item;
+        quantity[count] = qty;
+
+        count++;
+    }
+
+    public void calculateBill() {
+
+        subtotal = 0;
+
+        for (int i = 0; i < count; i++) {
+
+            subtotal += orderedItems[i].getPrice() * quantity[i];
+        }
+
+        if (subtotal >= 500) {
+            deliveryCharge = 0;
+        } else {
+            deliveryCharge = 50;
+        }
+
+        gst = subtotal * 0.05;
+
+        finalAmount = subtotal + deliveryCharge + gst;
+    }
+
+    public void printBill() {
+
+        calculateBill();
+
+        System.out.println("\n========== ORDER SUMMARY ==========");
+
+        for (int i = 0; i < count; i++) {
+
+            double itemTotal =
+                    orderedItems[i].getPrice() * quantity[i];
+
+            System.out.printf(
+                    "%-15s x%d = Rs. %.2f\n",
+                    orderedItems[i].getItemName(),
+                    quantity[i],
+                    itemTotal
+            );
+        }
+
+        System.out.println("-----------------------------------");
+
+        System.out.printf("Subtotal         : Rs. %.2f\n", subtotal);
+        System.out.printf("Delivery Charge  : Rs. %.2f\n", deliveryCharge);
+        System.out.printf("GST (5%%)         : Rs. %.2f\n", gst);
+
+        System.out.println("-----------------------------------");
+
+        System.out.printf("Total Amount     : Rs. %.2f\n", finalAmount);
+
+        System.out.println("===================================");
+    }
+}
+
+public class OnlineFoodDeliverySystem {
+
+    public static void main(String[] args) {
+
+        FoodItem burger = new FoodItem("Burger", 100);
+        FoodItem pizza = new FoodItem("Pizza", 300);
+        FoodItem pasta = new FoodItem("Pasta", 200);
+        FoodItem coldDrink = new FoodItem("Cold Drink", 50);
+
+        FoodItem[] menu = {
+                burger,
+                pizza,
+                pasta,
+                coldDrink
+        };
+
+        Restaurant restaurant =
+                new Restaurant("QuickBite Kitchen", menu);
+
+        System.out.println("=== Welcome To QuickBite Food Delivery ===\n");
+
+        restaurant.showMenu();
+
+        Order order = new Order();
+
+        order.addItem(burger, 2);
+        order.addItem(pizza, 1);
+
+        order.printBill();
+
+        System.out.println("\nThank You For Ordering!");
+    }
+}
